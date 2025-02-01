@@ -8,9 +8,5 @@ app = FastAPI()
 def read_root():
     return {"message": "Welcome to FastAPI!"}
 
-@app.get("/hello/{name}")
-def say_hello(name: str):
-    return {"message": f"Hello, {name}!"}
-
 app.include_router(auth_router)
 app.include_router(order_router)
