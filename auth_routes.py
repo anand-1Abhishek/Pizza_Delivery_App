@@ -51,9 +51,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
     return user
 
-@auth_router.get('/')
-async def hello():
-    return {"message": "Hello World"}
+# @auth_router.get('/')
+# async def hello():
+#     return {"message": "Hello World"}
 
 @auth_router.post('/signup', status_code=status.HTTP_201_CREATED)
 async def signup(user: SignUpModel):
