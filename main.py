@@ -1,12 +1,26 @@
 from fastapi import FastAPI
-from auth_routes import auth_router
-from order_routes import order_router
+from api.auth import auth_router
+from api.orders import orders_router
+from core.config import settings
+from db.base import Base
+from db.session import engine
 
-app = FastAPI()
+# Create tables in the database
+Base.metadata.create_all(bind=engine)
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to FastAPI!"}
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.PROJECT_VERSION,
+    description="Order Management API",
+    openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    docs_url=f"{settings.API_V1_STR}/docs",
+    redoc_url=f"{settings.API_V1_STR}/redoc",
+)
 
-app.include_router(auth_router)
-app.include_router(order_router)
+# Include routers
+app.include_router(auth_router, prefix=f"{settings.API_V1_STR}/auth")
+app.include_router(orders_router, prefix=f"{settings.API_V1_STR}/orders")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
